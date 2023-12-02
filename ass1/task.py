@@ -99,10 +99,11 @@ class LogisticRegression:
         for _ in range(self.iterations):
             linear_prediction = np.dot(X, self.thetas) + self.theta0
             prediction = sigmoid(linear_prediction)
-
+            # T stands for transpose
             d_thetas = (1 / m_sample) * np.dot(X.T, (prediction - y))
             d_theta0 = (1 / m_sample) * np.sum(prediction - y)
             
+            # to reach local minimum
             self.thetas -= self.learning_rate * d_thetas.astype(float)
             self.theta0 -= self.learning_rate * d_theta0
 
