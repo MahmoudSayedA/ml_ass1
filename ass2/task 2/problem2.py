@@ -6,7 +6,7 @@ from collections import Counter
 from Knn import Knn
 
 # Read the CSV file
-data = pd.read_csv('./diabetes.csv')
+data = pd.read_csv('ass2/task 2/diabetes.csv')
 
 # MinMaxScalar
 def minMaxScaling(col):
@@ -18,15 +18,15 @@ def minMaxScaling(col):
 
 
 # Drop Outcome column from dataset
-x = data.drop(columns=["Outcome"]).to_numpy()
+x = data.drop(columns=["Outcome"])
 
 # Apply Normalization
-x = np.apply_along_axis(minMaxScaling, axis=0, arr=data)
+x = np.apply_along_axis(minMaxScaling, axis=0, arr=x)
 
 y = data["Outcome"].to_numpy()
 
 # Split the dataset to training set and testing set
-X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=.3, random_state=22)
+X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=.3, random_state=1234)
 
 
 # Apply Knn to the normalized training set
