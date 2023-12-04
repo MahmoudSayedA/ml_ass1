@@ -54,7 +54,7 @@ for i in range(2, 7):
 
 # convert accuracies array to numpy array
 accuracies_array = np.array(accuracies)
-# getting the average of all acurracies
+# Getting the average of all acurracies
 average_accuracy = np.mean(accuracies_array)
 print("\n========================================\n")
 print("Average Accuracy:", average_accuracy, '%')
