@@ -28,25 +28,33 @@ y = data["Outcome"].to_numpy()
 # Split the dataset to training set and testing set
 X_train, X_test, Y_train, Y_test = train_test_split(x, y, test_size=.3, random_state=1234)
 
+# Create empty array to collect accuracies
+accuracies = []
 
-# Apply Knn to the normalized training set
-knn = Knn()
-knn.fit(X_train, Y_train)
+for i in range(2, 7):
+    print("\n========================================\n")
+    # Apply Knn to the normalized training set
+    knn = Knn(i)
+    knn.fit(X_train, Y_train)
+    Y_predict = knn.predict(X_test)
 
-Y_predict = knn.predict(X_test)
+    print("K value:", i)
+    # calculate the number of correctly classified instances
+    correctly_classified_instances = np.sum(Y_predict == Y_test)
+    print ("The number of correctly classified instances:",correctly_classified_instances)
 
-print("k value: 3")
-# calculate the number of correctly classified instances
-correctly_classified_instances = np.sum(Y_predict == Y_test)
-print ("The number of correctly classified instances: ",correctly_classified_instances)
+    # Number of total instances
+    total_instances = len(Y_test)
+    print ("The number of total instances:", total_instances)
 
-# Number of total instances
-total_instances = len(Y_test)
-print ("The number of total instances: ", total_instances)
+    # Calculate the accuracy
+    accuracy = correctly_classified_instances / total_instances * 100
+    accuracies.append(accuracy)
+    print("Accuracy:", accuracy, '%')
 
-# Calculate the accuracy
-acc = correctly_classified_instances / total_instances * 100
-print("Accuracy:", acc, '%')
-
-
-
+# convert accuracies array to numpy array
+accuracies_array = np.array(accuracies)
+# getting the average of all acurracies
+average_accuracy = np.mean(accuracies_array)
+print("\n========================================\n")
+print("Average Accuracy:", average_accuracy, '%')
