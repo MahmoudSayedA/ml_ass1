@@ -6,7 +6,7 @@ from collections import Counter
 from Knn import Knn
 
 # Read the CSV file
-data = pd.read_csv('ass2/task 2/diabetes.csv')
+data = pd.read_csv('./diabetes.csv')
 
 # MinMaxScalar
 def minMaxScaling(col):
