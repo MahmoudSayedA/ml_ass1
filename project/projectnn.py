@@ -9,8 +9,8 @@ import numpy as np
 import seaborn as sns
 
 # Load data
-train_data = pd.read_csv('/content/mnist_train.csv')
-test_data = pd.read_csv('/content/mnist_test.csv')
+train_data = pd.read_csv('./mnist_train.csv')
+test_data = pd.read_csv('./mnist_test.csv')
 
 # Drop unnecessary columns
 X = train_data.drop(columns=['label'])
@@ -58,20 +58,20 @@ y_val_encoded = to_categorical(y_val, num_classes=10)
 y_test_encoded = to_categorical(y_test, num_classes=10)
 
 # Define an ANN model
-model_ann = models.Sequential()
-model_ann.add(layers.Dense(128, activation='relu', input_shape=(28 * 28,)))
-model_ann.add(layers.Dense(64, activation='relu'))
-model_ann.add(layers.Dense(10, activation='softmax'))
+model_ann1st = models.Sequential()
+model_ann1st.add(layers.Dense(128, activation='relu', input_shape=(28 * 28,)))
+model_ann1st.add(layers.Dense(64, activation='relu'))
+model_ann1st.add(layers.Dense(10, activation='softmax'))
 
 # Compile the ANN model
-model_ann.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model_ann1st.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Train the ANN model
-model_ann.fit(X_train, y_train_encoded, epochs=5, batch_size=64, validation_data=(X_val, y_val_encoded))
+model_ann1st.fit(X_train, y_train_encoded, epochs=5, batch_size=64, validation_data=(X_val, y_val_encoded))
 
 
 # Evaluate The ANN model on the validation set
-y_val_pred_probs = model_ann.predict(X_val)
+y_val_pred_probs = model_ann1st.predict(X_val)
 y_val_pred = np.argmax(y_val_pred_probs, axis=1)
 
 # Confusion Matrix
@@ -86,10 +86,10 @@ plt.ylabel('Actual')
 plt.show()
 
 # Evaluate The ANN model on the validation set
-val_loss, val_acc = model_ann.evaluate(X_val, y_val_encoded)
+val_loss, val_acc = model_ann1st.evaluate(X_val, y_val_encoded)
 print("Validation accuracy:", val_acc)
 
 # Evaluate the ANN model on the test set
-test_loss, test_acc = model_ann.evaluate(X_test_normalized, y_test_encoded)
+test_loss, test_acc = model_ann1st.evaluate(X_test_normalized, y_test_encoded)
 print("Test accuracy:", test_acc)
 

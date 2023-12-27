@@ -25,7 +25,7 @@ num_classes = y.nunique()
 print("Number of unique classes:", num_classes)
 
 # Number of features
-num_features = len(X) - 1  # Subtract 1 for the label column
+num_features = len(X.columns)
 print("Number of features:", num_features)
 
 # Check for missing values
@@ -58,26 +58,65 @@ y_train_encoded = to_categorical(y_train, num_classes=10)
 y_val_encoded = to_categorical(y_val, num_classes=10)
 y_test_encoded = to_categorical(y_test, num_classes=10)
 
-# Define an ANN model with more hidden layers
-model_ann = models.Sequential()
-model_ann.add(layers.Dense(128, activation='relu', input_shape=(28 * 28,)))
-model_ann.add(layers.Dense(64, activation='relu'))
-model_ann.add(layers.Dense(32, activation='relu'))  # Additional layer
-model_ann.add(layers.Dense(16, activation='relu'))  # Additional layer
-model_ann.add(layers.Dense(10, activation='softmax'))
+# Define 1st architecture ANN model
+model_ann1st = models.Sequential()
+model_ann1st.add(layers.Dense(128, activation='relu', input_shape=(28 * 28,)))
+model_ann1st.add(layers.Dense(64, activation='relu'))
+model_ann1st.add(layers.Dense(10, activation='softmax'))
 
-# Increase the learning rate
-custom_optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
+custom_optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
 
-# Compile the ANN model with the custom optimizer
-model_ann.compile(optimizer=custom_optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Increase the batch size and train the ANN model
-model_ann.fit(X_train, y_train_encoded, epochs=50, batch_size=128, validation_data=(X_val, y_val_encoded))
+# Compile the ANN model
+model_ann1st.compile(optimizer="adam", loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Train the ANN model
+model_ann1st.fit(X_train, y_train_encoded, epochs=5, batch_size=64, validation_data=(X_val, y_val_encoded))
+
 
 # Evaluate The ANN model on the validation set
-y_val_pred_probs = model_ann.predict(X_val)
-y_val_pred = np.argmax(y_val_pred_probs, axis=1)
+y_val_pred_probs1st = model_ann1st.predict(X_val)
+y_val_pred = np.argmax(y_val_pred_probs1st, axis=1)
+
+# Confusion Matrix
+conf_mat = confusion_matrix(y_val, y_val_pred)
+
+# Display Confusion Matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_mat, annot=True, fmt='d', cmap='Blues', cbar=False)
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.show()
+
+# Evaluate The 2nd architecture ANN model on the validation set
+val_loss1st, val_acc1st = model_ann1st.evaluate(X_val, y_val_encoded)
+print("Validation accuracy:", val_acc1st)
+
+# Evaluate the ANN model on the test set
+# test_loss, test_acc = model_ann1st.evaluate(X_test_normalized, y_test_encoded)
+# print("Test accuracy:", test_acc)
+
+# Define an ANN model with more hidden layers
+model_ann2nd = models.Sequential()
+model_ann2nd.add(layers.Dense(64, activation='relu', input_shape=(28 * 28,)))
+model_ann2nd.add(layers.Dense(32, activation='relu'))
+# model_ann2nd.add(layers.Dense(32, activation='relu'))  # Additional layer
+# model_ann2nd.add(layers.Dense(16, activation='relu'))  # Additional layer
+model_ann2nd.add(layers.Dense(10, activation='softmax'))
+
+# Decrease the learning rate
+custom_optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
+
+# Compile the ANN model with the custom optimizer
+model_ann2nd.compile(optimizer=custom_optimizer, loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Increase the batch size and train the ANN model
+model_ann2nd.fit(X_train, y_train_encoded, epochs=5, batch_size=128, validation_data=(X_val, y_val_encoded))
+
+# Evaluate The ANN model on the validation set
+y_val_pred_probs2nd = model_ann2nd.predict(X_val)
+y_val_pred = np.argmax(y_val_pred_probs2nd, axis=1)
 
 # Confusion Matrix
 conf_mat = confusion_matrix(y_val, y_val_pred)
@@ -91,9 +130,20 @@ plt.ylabel('Actual')
 plt.show()
 
 # Evaluate The ANN model on the validation set
-val_loss, val_acc = model_ann.evaluate(X_val, y_val_encoded)
-print("Validation accuracy:", val_acc)
+val_loss, val_acc2nd = model_ann2nd.evaluate(X_val, y_val_encoded)
+print("Validation accuracy:", val_acc2nd)
 
+print ("The 1st architecture ANN model accuracy is", val_acc1st)
+print ("The 2nd architecture ANN model accuracy is", val_acc2nd)
+
+if (val_acc2nd > val_acc1st):
+    best_model = "2nd architecture"
+    test_loss, test_acc = model_ann2nd.evaluate(X_test_normalized, y_test_encoded)
+    print("The 2nd architecture ANN model is better than the 1st architecture ANN model.")
+else: 
+    best_model = "1st architecture"
+    test_loss, test_acc = model_ann1st.evaluate(X_test_normalized, y_test_encoded)
+    print("The 1st architecture ANN model is better than the 2nd architecture ANN model.")
+print ("best model: " + best_model)
 # Evaluate the ANN model on the test set
-test_loss, test_acc = model_ann.evaluate(X_test_normalized, y_test_encoded)
 print("Test accuracy:", test_acc)
