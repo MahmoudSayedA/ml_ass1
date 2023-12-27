@@ -160,6 +160,9 @@ print ("The 1st architecture ANN model accuracy is", val_acc1st)
 print ("The 2nd architecture ANN model accuracy is", val_acc2nd)
 best_accuracy = accuracyKnn
 best_model = None
+print("knn accuracy: ", accuracyKnn)
+print("ANN first: ", val_acc1st)
+print("ANN second: ", val_acc2nd)
 if (val_acc2nd > val_acc1st):
     best_model = "2nd architecture of ANN"
     best_accuracy = val_acc2nd
@@ -170,13 +173,13 @@ else:
     best_accuracy = val_acc1st
     test_loss, test_acc = model_ann1st.evaluate(X_test_normalized, y_test_encoded)
     print("The 1st architecture ANN model is better than the 2nd architecture ANN model.")
-if (best_accuracy >= accuracyKnn):
+if (best_accuracy * 100 >= accuracyKnn * 100):
     print("The best model is ANN")
-elif (best_accuracy < accuracyKnn):
+elif (best_accuracy * 100 < accuracyKnn * 100):
     best_model = "KNN"
     best_accuracy = accuracyKnn
     best_knn.fit(X_train, y_train)
-    y_pred = best_knn.predict(X_test)
+    y_pred = best_knn.predict(X_test_normalized)
     test_acc = accuracy_score(y_test, y_pred)
     print("The best model is KNN")
 print (best_accuracy)

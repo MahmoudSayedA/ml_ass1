@@ -134,9 +134,10 @@ print ("The 1st architecture ANN model accuracy is", val_acc1st)
 print ("The 2nd architecture ANN model accuracy is", val_acc2nd)
 
 if (val_acc2nd > val_acc1st):
+    test_loss, test_acc = model_ann2nd.evaluate(X_test_normalized, y_test_encoded)
     print("The 2nd architecture ANN model is better than the 1st architecture ANN model.")
 else: 
+    test_loss, test_acc = model_ann1st.evaluate(X_test_normalized, y_test_encoded)
     print("The 1st architecture ANN model is better than the 2nd architecture ANN model.")
 # Evaluate the ANN model on the test set
-test_loss, test_acc = model_ann1st.evaluate(X_test_normalized, y_test_encoded)
 print("Test accuracy:", test_acc)
